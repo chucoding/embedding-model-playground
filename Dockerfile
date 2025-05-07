@@ -20,7 +20,7 @@ RUN poetry config virtualenvs.create false
 COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies
-RUN poetry install --no-interaction --no-ansi
+RUN poetry install --no-interaction --no-ansi --no-root
 
 # Copy source code
 COPY server.py .
