@@ -17,13 +17,14 @@ RUN pip install --no-cache-dir poetry
 RUN poetry config virtualenvs.create false
 
 # Copy dependency files
-COPY pyproject.toml poetry.lock ./
+COPY pyproject.toml poetry.lock README.md ./
 
 # Install dependencies
 RUN poetry install --no-interaction --no-ansi
 
 # Copy source code
-COPY . .
+COPY server.py .
+COPY app/ ./app/
 
 # Set port
 EXPOSE 8501
