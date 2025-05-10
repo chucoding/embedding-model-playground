@@ -2,7 +2,7 @@ import streamlit as st
 from app.vector_store import VectorStore, EmbeddingType
 
 st.set_page_config(
-    page_title="Vector DB Test",
+    page_title="Embedding Model Test Playground",
     page_icon="🔍",
     layout="wide"
 )
@@ -19,7 +19,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("Vector DB Test Application")
+st.title("Embedding Model Test Playground")
 
 # Initialize VectorStore
 embedding_type = st.selectbox(
