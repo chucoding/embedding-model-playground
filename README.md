@@ -1,5 +1,5 @@
 # 🛝 embedding-model-test-playground
-![Image](https://github.com/user-attachments/assets/26d2c393-96f5-417a-acf8-ac0b62227282)
+![embedding-model-test-playground](https://github.com/user-attachments/assets/33f04a5f-b7c6-4222-9453-714f3a44f355)
 
 ## Overview
 This project is a playground for testing and comparing different embedding models using LangChain. It provides an environment to experiment with vector databases and embedding models.
