@@ -41,7 +41,7 @@ This project is a playground for testing and comparing different embedding model
 ### Server (Docker)
 ```bash
 # Run Docker container
-docker-compose up -d
+docker-compose up -d --build
 ```
 
 ### Local Development
