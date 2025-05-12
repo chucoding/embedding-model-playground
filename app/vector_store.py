@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional, Callable
 
 from langchain_core.embeddings import Embeddings
 from langchain_openai import OpenAIEmbeddings
@@ -31,24 +32,18 @@ class VectorStore:
                 api_key=settings.OPENAI_API_KEY
             )
         
-    def add_documents(self, documents: list[str]):
-        if self._store is None:
-            raise RuntimeError("Store not initialized")
-        
-        docs = [Document(page_content=doc) for doc in documents]
-        self._store.add_documents(documents=docs)
-        
     def load(self):
         if self._store is None:
             self._store = InMemoryVectorStore(
                 self._get_embeddings()
             )
             
-    def search(self, query: str, k: int = 1):
-        if self._store is None:
-            raise RuntimeError("Store not initialized")
-        
-        results = self._store.similarity_search_with_score(query=query, k=k)
+    def search(self, query: str, k: int = 1, filter: Optional[Callable[[Document], bool]] = None):
+        results = self._store.similarity_search_with_score(
+            query=query, 
+            k=k,
+            filter=filter
+        )
         filtered_results = [(doc, score) for doc, score in results]
         
         # Sort by score in descending order (higher scores first)
@@ -67,6 +62,39 @@ class VectorStore:
             processed_docs.append(doc)
         
         return processed_docs
+    
+    def retrive(self, query: str, k: int = 1, filter: Optional[Callable[[Document], bool]] = None):
+        # search_kwargs 구성
+        search_kwargs = {
+            "k": k, 
+            "fetch_k": k, 
+            "lambda_mult": 0.5
+        }
+        
+        if filter is not None:
+            search_kwargs["filter"] = filter
+        
+        retriever = self._store.as_retriever(
+            search_type="mmr",
+            search_kwargs=search_kwargs
+        )
+        return retriever.invoke(query)
+    
+    def get_all_documents(self):
+        """Returns all stored documents."""
+        return self._store.store.items()
+    
+    def add_documents(self, documents: str, metadatas: dict | None = None):
+        """Add documents to the vector store."""
+        if metadatas is None:
+            docs = [Document(page_content=documents)]
+        else:
+            docs = [Document(page_content=documents, metadata=metadatas)]
+        self._store.add_documents(documents=docs)
+
+    def delete_document(self, index: int):
+        """Deletes a document at the specified index."""
+        self._store.delete(ids=[index])
 
     def cleanup(self):
         if self._store is not None:
